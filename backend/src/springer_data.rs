@@ -3,16 +3,16 @@
 ***REMOVED***
 
 // Function used to return parsed url object.
-fn bioinformatics_articles() -> reqwest::Url {
+fn bioinformatics_articles(start: usize, records: usize) -> reqwest::Url {
     // For now its hard-coded because I was testing how the API is supposed to work.
-    let url = format!("https://api.springernature.com/meta/v2/json?api_key={API_KEY}&q=subject:Bioinformatics+type:Journal+onlinedatefrom:2023-04-01+onlinedateto:2023-04-30+sort:date&s=1&p=100");
+    let url = format!("https://api.springernature.com/meta/v2/json?api_key={API_KEY}&q=subject:Bioinformatics+type:Journal+onlinedatefrom:2023-04-01+onlinedateto:2023-04-30+sort:date&s={start}&p={records}");
     reqwest::Url::parse(&url).unwrap()
 }
 
 // Function for making the acutal request. Async for the future when we will be 
 // possibly making much more requests
 async fn request(client: &reqwest::Client) -> Result<reqwest::Response, reqwest::Error> {
-    client.get(bioinformatics_articles()).send().await
+    client.get(bioinformatics_articles(1, 100)).send().await
 }
 
 // this function makes requests and returns serialized value.
