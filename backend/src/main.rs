@@ -1,4 +1,7 @@
-use axum::{routing, response::{self, IntoResponse}};
+use axum::{
+    response::{self, IntoResponse},
+    routing,
+};
 
 mod springer_data;
 
@@ -19,6 +22,6 @@ async fn main() {
 async fn springer() -> response::Response {
     match springer_data::load_data().await {
         Ok(json) => response::Json::from(json).into_response(),
-        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response()
+        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
