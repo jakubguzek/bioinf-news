@@ -1,4 +1,4 @@
-// API key required to make requests to Springer API I generated it without 
+// API key required to make requests to Springer API I generated it without
 // problems but it's not clear to me how it works, and if it's all free or not.
 ***REMOVED***
 
@@ -9,7 +9,7 @@ fn bioinformatics_articles(start: usize, records: usize) -> reqwest::Url {
     reqwest::Url::parse(&url).unwrap()
 }
 
-// Function for making the acutal request. Async for the future when we will be 
+// Function for making the acutal request. Async for the future when we will be
 // possibly making much more requests
 async fn request(client: &reqwest::Client) -> Result<reqwest::Response, reqwest::Error> {
     client.get(bioinformatics_articles(1, 100)).send().await
