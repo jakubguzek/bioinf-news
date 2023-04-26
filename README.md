@@ -8,3 +8,6 @@ Initial list of technologies:
  - Rust with [Tokio](https://tokio.rs/) and [Axum](https://docs.rs/axum/latest/axum/) for backend
  - [MongoDB](https://www.mongodb.com/) for data repository
  - [React.js](https://react.dev/) for frontend
+
+### External APIs reference
+ - [Springer API](https://dev.springernature.com/)
