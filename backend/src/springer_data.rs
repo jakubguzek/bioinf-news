@@ -1,6 +1,6 @@
 // API key required to make requests to Springer API I generated it without
 // problems but it's not clear to me how it works, and if it's all free or not.
-***REMOVED***
+use crate::secrets::API_KEY;
 
 // Function used to return parsed url object.
 fn bioinformatics_articles(start: usize, records: usize) -> reqwest::Url {
