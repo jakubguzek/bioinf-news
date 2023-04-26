@@ -3,6 +3,7 @@ use axum::{
     routing,
 };
 
+mod secrets;
 mod springer_data;
 
 /// Just a quick example main with tokio and axum Router.
