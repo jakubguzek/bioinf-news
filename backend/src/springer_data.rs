@@ -1,11 +1,15 @@
 // API key required to make requests to Springer API I generated it without
 // problems but it's not clear to me how it works, and if it's all free or not.
-use crate::secrets::API_KEY;
 
 // Function used to return parsed url object.
 fn bioinformatics_articles(start: usize, records: usize) -> reqwest::Url {
     // For now its hard-coded because I was testing how the API is supposed to work.
-    let url = format!("https://api.springernature.com/meta/v2/json?api_key={API_KEY}&q=subject:Bioinformatics+type:Journal+onlinedatefrom:2023-04-01+onlinedateto:2023-04-30+sort:date&s={start}&p={records}");
+    let url = format!(
+        "https://api.springernature.com/meta/v2/json?api_key={}&q=subject:Bioinformatics+type:Journal+onlinedatefrom:2023-04-01+onlinedateto:2023-04-30+sort:date&s={}&p={}",
+        std::env::var("SPRINGER_API_KEY").expect("SPRINGER_API_KEY must be set."), 
+        start, 
+        records
+    );
     reqwest::Url::parse(&url).unwrap()
 }
 
