@@ -89,14 +89,14 @@ impl Article {
 }
 
 impl Record {
-    pub fn new(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
-        let article = Article::from_springer(&springer_record)?;
+    pub fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
         let id = springer_record
             .get("identifier")
             .ok_or(ParseError)?
             .as_str()
             .ok_or(ParseError)?
             .to_string();
+        let article = Article::from_springer(&springer_record)?;
         Ok(Record {
             id,
             creation_date: bson::DateTime::now(),
