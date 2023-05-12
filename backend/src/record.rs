@@ -13,6 +13,7 @@ pub struct Article {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Record {
+    id: String,
     creation_date: bson::datetime::DateTime,
     article: Article,
 }
@@ -90,7 +91,14 @@ impl Article {
 impl Record {
     pub fn new(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
         let article = Article::from_springer(&springer_record)?;
+        let id = springer_record
+            .get("identifier")
+            .ok_or(ParseError)?
+            .as_str()
+            .ok_or(ParseError)?
+            .to_string();
         Ok(Record {
+            id,
             creation_date: bson::DateTime::now(),
             article,
         })
