@@ -17,7 +17,8 @@ pub struct Record {
     article: Article,
 }
 
-struct ParseError;
+#[derive(Debug)]
+pub struct ParseError;
 
 impl Article {
     fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
@@ -48,35 +49,33 @@ impl Article {
             return Err(ParseError);
         }
         // optional
-        let authors = springer_record
-            .get("creators")
-            .expect("creators field expected")
-            .as_array()
-            .expect("creators as_array expected")
-            .iter()
-            .map(|x| {
-                x.get("creator")
-                    .expect("creator field expected")
-                    .as_str()
-                    .expect("creator as_str expected")
-                    .to_string()
-            })
-            .collect::<Vec<String>>();
-        let key_words = springer_record
-            .get("subjects")
-            .expect("subjects field expected")
-            .as_array()
-            .expect("subjects as_array expected")
-            .iter()
-            .map(|x| x.as_str().expect("subject as_str expected").to_string())
-            .collect::<Vec<String>>();
-        let article_abstract = springer_record
-            .get("abstract")
-            .expect("abstract field expected")
-            .as_str()
-            .expect("abstract as_str expected")
-            .to_string();
-
+        let mut authors: Vec<String> = Vec::new();
+        if let Some(authors_obj) = springer_record.get("creators") {
+            if let Some(authors_array) = authors_obj.as_array() {
+                authors = authors_array
+                    .iter()
+                    .filter_map(|x| x.get("creator"))
+                    .filter_map(|x| x.as_str())
+                    .map(|x| x.to_string())
+                    .collect::<Vec<String>>();
+            }
+        }
+        let mut key_words: Vec<String> = Vec::new();
+        if let Some(key_words_obj) = springer_record.get("subjects") {
+            if let Some(key_words_array) = key_words_obj.as_array() {
+                key_words = key_words_array
+                    .iter()
+                    .filter_map(|x| x.as_str())
+                    .map(|x| x.to_string())
+                    .collect::<Vec<String>>();
+            }
+        }
+        let mut article_abstract = String::new();
+        if let Some(article_abstract_obj) = springer_record.get("abstract") {
+            if let Some(article_abstract_str) = article_abstract_obj.as_str() {
+                article_abstract = article_abstract_str.to_string();
+            }
+        }
         Ok(Article {
             publication_date,
             title,
@@ -88,14 +87,15 @@ impl Article {
     }
 }
 
-// impl Record {
-//     pub fn new(springer_record: &serde_json::Value) -> Self {
-//         Record {
-//             creation_date: bson::DateTime::now(),
-//             article: Article::from_springer(&springer_record),
-//         }
-//     }
-// }
+impl Record {
+    pub fn new(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
+        let article = Article::from_springer(&springer_record)?;
+        Ok(Record {
+            creation_date: bson::DateTime::now(),
+            article,
+        })
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -130,7 +130,6 @@ mod tests {
         assert_eq!(out[0], "link0");
         assert_eq!(out[1], "link1");
         assert_eq!(out.len(), 2);
-
 
         let obj_one = json!({
             "format": json!("html"),

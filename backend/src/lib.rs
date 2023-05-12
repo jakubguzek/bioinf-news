@@ -10,9 +10,9 @@ pub async fn springer() -> response::Response {
         Ok(json) => {
             for i in 0..100 {
                 dbg!(i);
-                // dbg!(record::Record::new(
-                //    json.get("records").unwrap().get(i).unwrap()
-                // ));
+                dbg!(record::Record::new(
+                   json.get("records").unwrap().get(i).unwrap()
+                ));
             }
             response::Json::from(json).into_response()
         }
