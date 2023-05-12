@@ -1,6 +1,6 @@
 use axum::routing;
-use dotenv::dotenv;
 use backend::springer;
+use dotenv::dotenv;
 
 /// Just a quick example main with tokio and axum Router.
 #[tokio::main]

@@ -12,7 +12,7 @@ fn get_connect_string() -> String {
     )
 }
 
-pub async fn connect_mongo_db() -> mongodb::error::Result<Client> {
+async fn connect_mongo_db() -> mongodb::error::Result<Client> {
     let mut client_options = ClientOptions::parse(get_connect_string()).await?;
 
     // Set the server_api field of the client_options object to Stable API version 1

@@ -1,10 +1,8 @@
 pub mod database;
 pub mod springer_data;
+pub mod record;
 
 use axum::response::{self, IntoResponse};
-use mongodb::Client;
-
-pub async fn update_database(client: &Client) {}
 
 // Test returning response json from Springer API.
 pub async fn springer() -> response::Response {
