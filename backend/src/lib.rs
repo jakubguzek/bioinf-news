@@ -11,3 +11,22 @@ pub async fn springer() -> response::Response {
         Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
+
+pub async fn test_insert() {
+    let client = database::connect_mongo_db().await.unwrap();
+    let db = client.database("bioinf-news");
+
+    // Get a handle to a collection in the database.
+    let collection = db.collection::<record::Record>("records");
+    let record = record::Record::from_springer(
+        springer_data::load_data()
+            .await
+            .unwrap()
+            .get("records")
+            .expect("should have records field")
+            .get(0)
+            .expect("should have 0'th object"),
+    )
+    .unwrap();
+    collection.insert_one(record, None).await.unwrap();
+}
