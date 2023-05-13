@@ -1,7 +1,7 @@
 // API key required to make requests to Springer API I generated it without
 // problems but it's not clear to me how it works, and if it's all free or not.
 
-use chrono::NaiveDate;
+use chrono::{Local, NaiveDate, Months};
 
 // Function used to return parsed url object.
 fn springer_articles_url(subject: &str, article_type: &str, from_date: &NaiveDate, till_date: &NaiveDate, idx: usize, amount: usize) -> reqwest::Url {
@@ -22,8 +22,8 @@ fn springer_articles_url(subject: &str, article_type: &str, from_date: &NaiveDat
 // Function for making the acutal request. Async for the future when we will be
 // possibly making much more requests
 async fn request(client: &reqwest::Client) -> Result<reqwest::Response, reqwest::Error> {
-    let from_date = NaiveDate::from_ymd_opt(2023, 4, 1).unwrap();
-    let till_date = NaiveDate::from_ymd_opt(2023, 4, 30).unwrap();
+    let till_date = dbg!(Local::now().date_naive()); 
+    let from_date = till_date.clone().checked_sub_months(Months::new(1)).unwrap();
     client.get(springer_articles_url("Bioinformatics", "Journal", &from_date, &till_date, 1, 100)).send().await
 }
 
