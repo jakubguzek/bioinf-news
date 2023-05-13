@@ -22,7 +22,7 @@ fn springer_articles_url(subject: &str, article_type: &str, from_date: &NaiveDat
 // Function for making the acutal request. Async for the future when we will be
 // possibly making much more requests
 async fn request(client: &reqwest::Client) -> Result<reqwest::Response, reqwest::Error> {
-    let till_date = dbg!(Local::now().date_naive()); 
+    let till_date = Local::now().date_naive(); 
     let from_date = till_date.clone().checked_sub_months(Months::new(1)).unwrap();
     client.get(springer_articles_url("Bioinformatics", "Journal", &from_date, &till_date, 1, 100)).send().await
 }
