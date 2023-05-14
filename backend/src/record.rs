@@ -21,6 +21,14 @@ pub struct Record {
 #[derive(Debug)]
 pub struct ParseError;
 
+impl std::error::Error for ParseError {}
+
+impl std::fmt::Display for ParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Mandatory json parsing could not be performed.")
+    }
+}
+
 impl Article {
     fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
         // mandatory
