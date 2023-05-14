@@ -69,7 +69,6 @@ pub async fn update_springer(
             if let Ok(record) = record::Record::from_springer(record_value) {
                 // unwrap here because I'am not sure how to handle this.
                 if !record.is_present(&collection).await.unwrap() {
-                    dbg!(&record);
                     collection.insert_one(record, None).await?;
                 }
             }
