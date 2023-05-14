@@ -67,8 +67,7 @@ pub async fn update_springer(
             .ok_or(record::ParseError)?;
         for record_value in records {
             if let Ok(record) = record::Record::from_springer(record_value) {
-                // unwrap here because I'am not sure how to handle this.
-                if !record.is_present(&collection).await.unwrap() {
+                if !record.is_present(&collection).await? {
                     collection.insert_one(record, None).await?;
                 }
             }

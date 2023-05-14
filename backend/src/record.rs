@@ -20,12 +20,12 @@ pub struct Record {
 }
 
 impl Record {
-    pub async fn is_present(&self, collection: &mongodb::Collection<Self>) -> Option<bool> {
+    pub async fn is_present(&self, collection: &mongodb::Collection<Self>) -> mongodb::error::Result<bool> {
         let filter = doc! { "doi": &self.doi };
-        if let Some(_) = collection.find(filter, None).await.ok()?.next().await {
-            return Some(true);
+        if let Some(_) = collection.find(filter, None).await?.next().await {
+            return Ok(true);
         }
-        Some(false)
+        Ok(false)
     }
 }
 
