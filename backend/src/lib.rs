@@ -67,7 +67,11 @@ pub async fn update_springer(
             .ok_or(record::ParseError)?;
         for record_value in records {
             if let Ok(record) = record::Record::from_springer(record_value) {
-                collection.insert_one(record, None).await?;
+                // unwrap here because I'am not sure how to handle this.
+                if !record.is_present(&collection).await.unwrap() {
+                    dbg!(&record);
+                    collection.insert_one(record, None).await?;
+                }
             }
         }
         idx += step;

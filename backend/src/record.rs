@@ -1,4 +1,5 @@
-use mongodb::bson;
+use futures::stream::StreamExt;
+use mongodb::bson::{self, doc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -16,6 +17,16 @@ pub struct Record {
     doi: String,
     creation_date: bson::datetime::DateTime,
     article: Article,
+}
+
+impl Record {
+    pub async fn is_present(&self, collection: &mongodb::Collection<Self>) -> Option<bool> {
+        let filter = doc! { "doi": &self.doi };
+        if let Some(_) = collection.find(filter, None).await.ok()?.next().await {
+            return Some(true);
+        }
+        Some(false)
+    }
 }
 
 #[derive(Debug)]
