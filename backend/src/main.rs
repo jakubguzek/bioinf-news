@@ -1,28 +1,18 @@
-use axum::{
-    response::{self, IntoResponse},
-    routing,
-};
-
-mod secrets;
-mod springer_data;
+use axum::routing;
+use dotenv::dotenv;
 
 /// Just a quick example main with tokio and axum Router.
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
+    let client = backend::database::connect_mongo_db().await.unwrap();
+    backend::update_records_springer(client, 1000, 100).await.unwrap();
     // Get request on /springer endpoint.
-    let app = axum::Router::new().route("/springer", routing::get(springer));
+    let app = axum::Router::new().route("/springer", routing::get(backend::springer));
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("-> Listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
-
-// Test returning response json from Springer API.
-async fn springer() -> response::Response {
-    match springer_data::load_data().await {
-        Ok(json) => response::Json::from(json).into_response(),
-        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
 }
