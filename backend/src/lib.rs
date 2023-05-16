@@ -4,7 +4,7 @@ pub mod springer_data;
 
 use axum::response::{self, IntoResponse};
 use chrono::{Local, Months};
-use mongodb::{bson::doc, options::InsertManyOptions};
+use mongodb::{bson::{self, doc}, options::InsertManyOptions};
 
 // Test returning response json from Springer API.
 pub async fn springer() -> response::Response {
@@ -14,8 +14,10 @@ pub async fn springer() -> response::Response {
     }
 }
 
-pub async fn delete_records<T>(collection: &mongodb::Collection<T>) -> mongodb::error::Result<()> {
-    Ok(())
+pub async fn delete_records<T>(collection: &mongodb::Collection<T>) -> mongodb::error::Result<mongodb::results::DeleteResult> {
+    let old_date = Local::now().checked_sub_months(Months::new(1)).unwrap();
+    let query = doc!("creation_date": {"$lt": bson::DateTime::from_chrono(old_date)});
+    collection.delete_many(query, None).await
 }
 
 pub async fn update_records_springer(
@@ -25,6 +27,7 @@ pub async fn update_records_springer(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let db = mongo_db_client.database("bioinf-news");
     let collection = db.collection::<record::Record>("springer-records");
+    delete_records(&collection).await?;
     let mut records_buffer: Vec<record::Record> = Vec::with_capacity(step);
 
     let reqwest_client = reqwest::Client::new();
