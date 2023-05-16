@@ -1,4 +1,3 @@
-use futures::stream::StreamExt;
 use mongodb::bson::{self, doc};
 use serde::{Deserialize, Serialize};
 
@@ -14,22 +13,9 @@ pub struct Article {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Record {
-    doi: String,
+    _id: String,
     creation_date: bson::datetime::DateTime,
     article: Article,
-}
-
-impl Record {
-    pub async fn is_present(
-        &self,
-        collection: &mongodb::Collection<Self>,
-    ) -> mongodb::error::Result<bool> {
-        let filter = doc! { "doi": &self.doi };
-        if let Some(_) = collection.find(filter, None).await?.next().await {
-            return Ok(true);
-        }
-        Ok(false)
-    }
 }
 
 #[derive(Debug)]
@@ -120,7 +106,7 @@ impl Record {
             .to_string();
         let article = Article::from_springer(&springer_record)?;
         Ok(Record {
-            doi,
+            _id: doi,
             creation_date: bson::DateTime::now(),
             article,
         })

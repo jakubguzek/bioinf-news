@@ -4,6 +4,7 @@ pub mod springer_data;
 
 use axum::response::{self, IntoResponse};
 use chrono::{Local, Months};
+use mongodb::{bson::doc, options::InsertManyOptions};
 
 // Test returning response json from Springer API.
 pub async fn springer() -> response::Response {
@@ -13,13 +14,18 @@ pub async fn springer() -> response::Response {
     }
 }
 
-pub async fn update_springer(
+pub async fn delete_records<T>(collection: &mongodb::Collection<T>) -> mongodb::error::Result<()> {
+    Ok(())
+}
+
+pub async fn update_records_springer(
     mongo_db_client: mongodb::Client,
     mut amount: usize,
     step: usize,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let db = mongo_db_client.database("bioinf-news");
-    let collection = db.collection::<record::Record>("springer_records");
+    let collection = db.collection::<record::Record>("springer-records");
+    let mut records_buffer: Vec<record::Record> = Vec::with_capacity(step);
 
     let reqwest_client = reqwest::Client::new();
 
@@ -67,12 +73,25 @@ pub async fn update_springer(
             .ok_or(record::ParseError)?;
         for record_value in records {
             if let Ok(record) = record::Record::from_springer(record_value) {
-                if !record.is_present(&collection).await? {
-                    collection.insert_one(record, None).await?;
-                }
+                records_buffer.push(record);
             }
         }
+        let options = InsertManyOptions::builder().ordered(false).build();
+        match collection.insert_many(&records_buffer, options).await {
+            Err(insert_error) => match *insert_error.kind {
+                mongodb::error::ErrorKind::BulkWrite(ref e) => {
+                    if e.write_concern_error.is_some() {
+                        panic!("Unexpected error occured: {:?}", &insert_error);
+                    }
+                }
+                _ => {
+                    panic!("Unexpected error occured: {:?}", &insert_error);
+                }
+            },
+            Ok(_) => (),
+        };
         idx += step;
+        records_buffer.clear();
     }
 
     Ok(())

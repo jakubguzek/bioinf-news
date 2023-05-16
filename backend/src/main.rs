@@ -6,7 +6,7 @@ use dotenv::dotenv;
 async fn main() {
     dotenv().ok();
     let client = backend::database::connect_mongo_db().await.unwrap();
-    backend::update_springer(client, 1000, 100).await.unwrap();
+    backend::update_records_springer(client, 1000, 100).await.unwrap();
     // Get request on /springer endpoint.
     let app = axum::Router::new().route("/springer", routing::get(backend::springer));
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8080));
