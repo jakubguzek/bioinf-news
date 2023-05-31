@@ -1,21 +1,17 @@
+use chrono::{Datelike, NaiveDate};
 use mongodb::bson::{self, doc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Article {
-    publication_date: String,
+    _id: String,
+    source: String,
+    publication_date: bson::datetime::DateTime,
     title: String,
     authors: Vec<String>,
     key_words: Vec<String>,
     urls: Vec<String>,
     article_abstract: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Record {
-    _id: String,
-    creation_date: bson::datetime::DateTime,
-    article: Article,
 }
 
 #[derive(Debug)]
@@ -30,14 +26,30 @@ impl std::fmt::Display for ParseError {
 }
 
 impl Article {
-    fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
+    pub fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
         // mandatory
+        let _id = springer_record
+            .get("identifier")
+            .ok_or(ParseError)?
+            .as_str()
+            .ok_or(ParseError)?
+            .to_string();
         let publication_date = springer_record
             .get("onlineDate")
             .ok_or(ParseError)?
             .as_str()
             .ok_or(ParseError)?
             .to_string();
+        let publication_date = NaiveDate::parse_from_str(&publication_date, "%Y-%m-%d")
+            .ok()
+            .ok_or(ParseError)?;
+        let publication_date = bson::DateTime::builder()
+            .year(publication_date.year())
+            .month(publication_date.month() as u8)
+            .day(publication_date.day() as u8)
+            .build()
+            .ok()
+            .ok_or(ParseError)?;
         let title = springer_record
             .get("title")
             .ok_or(ParseError)?
@@ -85,30 +97,16 @@ impl Article {
                 article_abstract = article_abstract_str.to_string();
             }
         }
+        let source = String::from("springer");
         Ok(Article {
+            _id,
+            source,
             publication_date,
             title,
             authors,
             key_words,
             urls,
             article_abstract,
-        })
-    }
-}
-
-impl Record {
-    pub fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
-        let doi = springer_record
-            .get("identifier")
-            .ok_or(ParseError)?
-            .as_str()
-            .ok_or(ParseError)?
-            .to_string();
-        let article = Article::from_springer(&springer_record)?;
-        Ok(Record {
-            _id: doi,
-            creation_date: bson::DateTime::now(),
-            article,
         })
     }
 }
