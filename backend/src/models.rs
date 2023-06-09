@@ -1,43 +1,45 @@
-use mongodb::bson::{self, doc};
+use chrono::{Datelike, NaiveDate};
+use mongodb::bson;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Article {
-    publication_date: String,
-    title: String,
-    authors: Vec<String>,
-    key_words: Vec<String>,
-    urls: Vec<String>,
-    article_abstract: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Record {
-    _id: String,
-    creation_date: bson::datetime::DateTime,
-    article: Article,
-}
-
-#[derive(Debug)]
-pub struct ParseError;
-
-impl std::error::Error for ParseError {}
-
-impl std::fmt::Display for ParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Mandatory json parsing could not be performed.")
-    }
+    pub _id: bson::oid::ObjectId,
+    pub doi: String,
+    pub source: String,
+    pub publication_date: bson::datetime::DateTime,
+    pub title: String,
+    pub authors: Vec<String>,
+    pub key_words: Vec<String>,
+    pub urls: Vec<String>,
+    pub article_abstract: String,
 }
 
 impl Article {
-    fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
+    pub fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
         // mandatory
+        let doi = springer_record
+            .get("identifier")
+            .ok_or(ParseError)?
+            .as_str()
+            .ok_or(ParseError)?
+            .to_string();
         let publication_date = springer_record
             .get("onlineDate")
             .ok_or(ParseError)?
             .as_str()
             .ok_or(ParseError)?
             .to_string();
+        let publication_date = NaiveDate::parse_from_str(&publication_date, "%Y-%m-%d")
+            .ok()
+            .ok_or(ParseError)?;
+        let publication_date = bson::DateTime::builder()
+            .year(publication_date.year())
+            .month(publication_date.month() as u8)
+            .day(publication_date.day() as u8)
+            .build()
+            .ok()
+            .ok_or(ParseError)?;
         let title = springer_record
             .get("title")
             .ok_or(ParseError)?
@@ -85,7 +87,12 @@ impl Article {
                 article_abstract = article_abstract_str.to_string();
             }
         }
-        Ok(Article {
+        let source = String::from("springer");
+        let _id = bson::oid::ObjectId::new();
+        Ok(Self {
+            _id,
+            doi,
+            source,
             publication_date,
             title,
             authors,
@@ -96,20 +103,88 @@ impl Article {
     }
 }
 
-impl Record {
-    pub fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
-        let doi = springer_record
-            .get("identifier")
-            .ok_or(ParseError)?
-            .as_str()
-            .ok_or(ParseError)?
-            .to_string();
-        let article = Article::from_springer(&springer_record)?;
-        Ok(Record {
-            _id: doi,
-            creation_date: bson::DateTime::now(),
-            article,
-        })
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ArticleOutgoing {
+    pub _id: bson::oid::ObjectId,
+    pub doi: String,
+    pub source: String,
+    pub publication_date: chrono::NaiveDate,
+    pub title: String,
+    pub authors: Vec<String>,
+    pub key_words: Vec<String>,
+    pub urls: Vec<String>,
+    pub article_abstract: String,
+}
+
+impl From<Article> for ArticleOutgoing {
+    fn from(article: Article) -> Self {
+        let publication_date = article.publication_date.to_chrono();
+        let publication_date = chrono::NaiveDate::from_ymd_opt(
+            publication_date.year(),
+            publication_date.month(),
+            publication_date.day(),
+        )
+        .unwrap();
+        Self {
+            _id: article._id.clone(),
+            doi: article.doi.clone(),
+            source: article.source.clone(),
+            publication_date,
+            title: article.title.clone(),
+            authors: article.authors.clone(),
+            key_words: article.key_words.clone(),
+            urls: article.urls.clone(),
+            article_abstract: article.article_abstract.clone(),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ArticleShort {
+    _id: bson::oid::ObjectId,
+    doi: String,
+    source: String,
+    publication_date: bson::datetime::DateTime,
+    title: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ArticleShortOutgoing {
+    #[serde(serialize_with = "bson::serde_helpers::serialize_object_id_as_hex_string")]
+    _id: bson::oid::ObjectId,
+    doi: String,
+    source: String,
+    publication_date: chrono::NaiveDate,
+    title: String,
+}
+
+impl From<ArticleShort> for ArticleShortOutgoing {
+    fn from(article_short: ArticleShort) -> Self {
+        let publication_date = article_short.publication_date.to_chrono();
+        let publication_date = chrono::NaiveDate::from_ymd_opt(
+            publication_date.year(),
+            publication_date.month(),
+            publication_date.day(),
+        )
+        .unwrap();
+        Self {
+            _id: article_short._id.clone(),
+            doi: article_short.doi.clone(),
+            source: article_short.source.clone(),
+            publication_date,
+            title: article_short.title.clone(),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct ParseError;
+
+impl std::error::Error for ParseError {}
+
+impl std::fmt::Display for ParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Mandatory json parsing could not be performed.")
     }
 }
 
