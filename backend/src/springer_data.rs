@@ -1,7 +1,4 @@
-// API key required to make requests to Springer API I generated it without
-// problems but it's not clear to me how it works, and if it's all free or not.
-
-// Function used to return parsed url object.
+/// Function used to return parsed url object.
 pub fn springer_articles_url(
     subject: &str,
     article_type: &str,
