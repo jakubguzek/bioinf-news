@@ -15,11 +15,13 @@ use mongodb::{
     options::{FindOptions, InsertManyOptions},
 };
 use serde::Deserialize;
+use tower_http::cors::CorsLayer;
 
 pub fn app(client: mongodb::Client) -> Router {
     Router::new()
         .route("/articles", routing::get(get_articles_endpoint))
         .route("/articles/:id", routing::get(get_article_endpoint))
+        .layer(CorsLayer::permissive())
         .with_state(client.clone())
 }
 
