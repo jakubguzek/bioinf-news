@@ -1,6 +1,7 @@
 import React from "react";
 import './style.css';
 import ArticleList from "./components/ArticleList";
+import Footer from "./components/Footer"
 
 class App extends React.Component {
 
@@ -35,6 +36,7 @@ class App extends React.Component {
     return (
       <div className="container">
         <ArticleList items={items} />
+        <Footer /> 
       </div>
     );
   }
