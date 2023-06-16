@@ -17,22 +17,28 @@ footer {
 
 .container {
   text-align: center;
-  justify-content: center;
-  margin: 0px;
 }
 
-.article-list {
+.article {
   margin: 0px;
+  justify-content: center;
+  align-items: center;
 }
 
 .article-collapsed-button {
   width: 80%;
   margin-top: 5px;
+  background-color: white;
+  border: none;
+  border-bottom: 1px solid;
+}
+
+.article-entry {
+  width: 80%;
 }
 
 .article-collapsed-entry {
   display: flex;
-  justify-content: center;
 }
 
 .article-collapsed-entry > span {
