@@ -13,7 +13,7 @@ The number located second to the ckeckbox is the priority of the task:
 - [ ] 0 Add `ArticleList.js` links to article in detailed article view [Jakub]
 - [ ] 4 Possibly refactor the part that displays the article entries in `ArticleList.js` to separate component `Article.js` [Jakub]
 - [ ] 0 Implement pagination either in a single-site manner or as an href
-- [ ] 1 Implement simple searching and filtering
+- [X] 1 Implement simple searching and filtering [Mateusz]
 - [ ] 2 Make a nice header for the main site
 - [ ] 3 Clean-up and comment the code
 
