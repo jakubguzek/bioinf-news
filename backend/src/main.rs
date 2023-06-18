@@ -5,7 +5,10 @@ use tokio;
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let client = backend::database::connect_mongo_db().await.unwrap();
+    let client = match backend::database::connect_mongo_db().await {
+        Err(e) => panic!("Coudn't connect to database due to error: {}", e.to_owned()),
+        Ok(client) => client
+    };
     backend::database::create_indexes(&client).await;
     let db = client.database("bioinf-news");
     backend::update_articles_springer(&db, 1000, 100)

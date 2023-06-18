@@ -1,6 +1,7 @@
 pub mod database;
 pub mod models;
 pub mod springer_data;
+pub mod elsevier_data;
 
 use axum::{
     extract::{Path, Query, State},
