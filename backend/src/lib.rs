@@ -20,8 +20,8 @@ use tower_http::cors::CorsLayer;
 
 pub fn app(client: mongodb::Client) -> Router {
     Router::new()
-        .route("/articles", routing::get(get_articles_endpoint))
-        .route("/random-article", routing::get(get_random_article_endpoint))
+        .route("/articles", routing::get(get_articles))
+        .route("/random-article", routing::get(get_random_article))
         .layer(CorsLayer::permissive())
         .with_state(client.clone())
 }
@@ -75,13 +75,13 @@ impl Default for Pagination {
     }
 }
 
-pub async fn get_articles_endpoint(
+pub async fn get_articles(
     State(client): State<mongodb::Client>,
     pagination: Option<Query<Pagination>>,
 ) -> response::Response {
     let db = client.database("bioinf-news");
     let Query(pagination) = pagination.unwrap_or_default();
-    match get_articles(&db, PaginationIngoing::from(pagination)).await {
+    match find_many_articles(&db, PaginationIngoing::from(pagination)).await {
         Ok(mut cursor) => {
             let mut articles: Vec<models::ArticleOutgoing> = Vec::new();
             while let Some(result) = cursor.next().await {
@@ -103,11 +103,11 @@ pub async fn get_articles_endpoint(
     }
 }
 
-pub async fn get_random_article_endpoint(
+pub async fn get_random_article(
     State(client): State<mongodb::Client>,
 ) -> response::Response {
     let db = client.database("bioinf-news");
-    match get_random_article(&db).await {
+    match find_one_random_article(&db).await {
         Ok(mut cursor) => {
             if let Some(doc) = cursor.next().await {
                 match doc {
@@ -136,7 +136,7 @@ pub async fn get_random_article_endpoint(
     }
 }
 
-pub async fn get_articles(
+pub async fn find_many_articles(
     db: &mongodb::Database,
     pagination: PaginationIngoing,
 ) -> mongodb::error::Result<mongodb::Cursor<models::Article>> {
@@ -158,7 +158,7 @@ pub async fn get_articles(
     collection.find(filter, options).await
 }
 
-pub async fn get_random_article(
+pub async fn find_one_random_article(
     db: &mongodb::Database,
 ) -> mongodb::error::Result<mongodb::Cursor<bson::Document>> {
     let collection = db.collection::<models::Article>("articles");
