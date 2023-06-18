@@ -17,19 +17,18 @@ pub struct Article {
 
 impl Article {
     pub fn from_springer(springer_record: &serde_json::Value) -> Result<Self, ParseError> {
+        let parse_str = |key: &str| -> Result<String, ParseError> {
+            let value = springer_record
+                .get(key)
+                .ok_or(ParseError)?
+                .as_str()
+                .ok_or(ParseError)?
+                .to_string();
+            Ok(value)
+        };
         // mandatory
-        let doi = springer_record
-            .get("identifier")
-            .ok_or(ParseError)?
-            .as_str()
-            .ok_or(ParseError)?
-            .to_string();
-        let publication_date = springer_record
-            .get("onlineDate")
-            .ok_or(ParseError)?
-            .as_str()
-            .ok_or(ParseError)?
-            .to_string();
+        let doi = parse_str("identifier")?;
+        let publication_date = parse_str("onlineDate")?; 
         let publication_date = NaiveDate::parse_from_str(&publication_date, "%Y-%m-%d")
             .ok()
             .ok_or(ParseError)?;
@@ -40,12 +39,7 @@ impl Article {
             .build()
             .ok()
             .ok_or(ParseError)?;
-        let title = springer_record
-            .get("title")
-            .ok_or(ParseError)?
-            .as_str()
-            .ok_or(ParseError)?
-            .to_string();
+        let title = parse_str("title")?; 
         let urls = springer_record
             .get("url")
             .ok_or(ParseError)?
