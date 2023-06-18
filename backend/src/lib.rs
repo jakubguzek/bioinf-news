@@ -1,9 +1,10 @@
 pub mod database;
 pub mod models;
 pub mod springer_data;
+pub mod elsevier_data;
 
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Query, State},
     response::{self, IntoResponse},
     routing, Router,
 };
@@ -20,7 +21,6 @@ use tower_http::cors::CorsLayer;
 pub fn app(client: mongodb::Client) -> Router {
     Router::new()
         .route("/articles", routing::get(get_articles_endpoint))
-        .route("/articles/:id", routing::get(get_article_endpoint))
         .layer(CorsLayer::permissive())
         .with_state(client.clone())
 }
@@ -82,11 +82,11 @@ pub async fn get_articles_endpoint(
     let Query(pagination) = pagination.unwrap_or_default();
     match get_articles(&db, PaginationIngoing::from(pagination)).await {
         Ok(mut cursor) => {
-            let mut articles: Vec<models::ArticleShortOutgoing> = Vec::new();
+            let mut articles: Vec<models::ArticleOutgoing> = Vec::new();
             while let Some(result) = cursor.next().await {
                 match result {
                     Ok(article_short) => {
-                        articles.push(models::ArticleShortOutgoing::from(article_short));
+                        articles.push(models::ArticleOutgoing::from(article_short));
                     }
                     Err(_) => {
                         return axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response();
@@ -102,28 +102,11 @@ pub async fn get_articles_endpoint(
     }
 }
 
-// doi nie może być w path
-pub async fn get_article_endpoint(
-    Path(id): Path<bson::oid::ObjectId>,
-    State(client): State<mongodb::Client>,
-) -> response::Response {
-    let db = client.database("bioinf-news");
-    match get_article(&db, &id).await {
-        Ok(result) => match result {
-            Some(article) => {
-                response::Json::from(models::ArticleOutgoing::from(article)).into_response()
-            }
-            None => axum::http::StatusCode::NOT_FOUND.into_response(),
-        },
-        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
-}
-
 pub async fn get_articles(
     db: &mongodb::Database,
     pagination: PaginationIngoing,
-) -> mongodb::error::Result<mongodb::Cursor<models::ArticleShort>> {
-    let collection = db.collection::<models::ArticleShort>("articles");
+) -> mongodb::error::Result<mongodb::Cursor<models::Article>> {
+    let collection = db.collection::<models::Article>("articles");
     let n_per_page = pagination.n_per_page;
     let mut filter = doc!();
     if let Some(id) = &pagination._id {
@@ -137,18 +120,8 @@ pub async fn get_articles(
     let options = FindOptions::builder()
         .sort(doc!("publication_date": -1, "_id": -1))
         .limit(n_per_page)
-        .projection(doc!("_id": 1, "doi": 1, "source": 1, "publication_date": 1, "title": 1))
         .build();
     return collection.find(filter, options).await;
-}
-
-pub async fn get_article(
-    db: &mongodb::Database,
-    id: &bson::oid::ObjectId,
-) -> mongodb::error::Result<Option<models::Article>> {
-    let collection = db.collection::<models::Article>("articles");
-    let filter = doc!("_id": id);
-    return collection.find_one(filter, None).await;
 }
 
 pub async fn delete_old_articles(
