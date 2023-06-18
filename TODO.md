@@ -18,7 +18,7 @@ The number located second to the ckeckbox is the priority of the task:
 - [ ] 3 Clean-up and comment the code
 
 ## Backend
-- [ ] 2 Create a `random_article` endpoint
+- [X] 2 Create a `random_article` endpoint
 - [X] 3 Maybe return a `Article` json instead of `ArticleShort` json in `get_articles_endpoint`
 - [ ] 4 Create an additional service that uses PubMed (entrez [E-utilities](https://pubmed.ncbi.nlm.nih.gov/download/)) to get article metadata
 

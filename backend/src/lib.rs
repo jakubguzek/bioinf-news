@@ -1,7 +1,7 @@
 pub mod database;
+pub mod elsevier_data;
 pub mod models;
 pub mod springer_data;
-pub mod elsevier_data;
 
 use axum::{
     extract::{Query, State},
@@ -21,6 +21,7 @@ use tower_http::cors::CorsLayer;
 pub fn app(client: mongodb::Client) -> Router {
     Router::new()
         .route("/articles", routing::get(get_articles_endpoint))
+        .route("/random-article", routing::get(get_random_article_endpoint))
         .layer(CorsLayer::permissive())
         .with_state(client.clone())
 }
@@ -102,6 +103,39 @@ pub async fn get_articles_endpoint(
     }
 }
 
+pub async fn get_random_article_endpoint(
+    State(client): State<mongodb::Client>,
+) -> response::Response {
+    let db = client.database("bioinf-news");
+    match get_random_article(&db).await {
+        Ok(mut cursor) => {
+            if let Some(doc) = cursor.next().await {
+                match doc {
+                    Ok(doc) => {
+                        let article: Result<models::Article, mongodb::bson::de::Error> =
+                            bson::from_document(doc);
+                        match article {
+                            Ok(article) => {
+                                let article = models::ArticleOutgoing::from(article);
+                                return response::Json::from(article).into_response();
+                            }
+                            Err(_) => {
+                                return axum::http::StatusCode::INTERNAL_SERVER_ERROR
+                                    .into_response();
+                            }
+                        }
+                    }
+                    Err(_) => {
+                        return axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response();
+                    }
+                }
+            }
+            return axum::http::StatusCode::NOT_FOUND.into_response();
+        }
+        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+    }
+}
+
 pub async fn get_articles(
     db: &mongodb::Database,
     pagination: PaginationIngoing,
@@ -121,7 +155,15 @@ pub async fn get_articles(
         .sort(doc!("publication_date": -1, "_id": -1))
         .limit(n_per_page)
         .build();
-    return collection.find(filter, options).await;
+    collection.find(filter, options).await
+}
+
+pub async fn get_random_article(
+    db: &mongodb::Database,
+) -> mongodb::error::Result<mongodb::Cursor<bson::Document>> {
+    let collection = db.collection::<models::Article>("articles");
+    let pipeline = vec![doc! {"$sample": {"size": 1}}];
+    collection.aggregate(pipeline, None).await
 }
 
 pub async fn delete_old_articles(
