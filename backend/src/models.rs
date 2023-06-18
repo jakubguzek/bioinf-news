@@ -139,44 +139,6 @@ impl From<Article> for ArticleOutgoing {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ArticleShort {
-    _id: bson::oid::ObjectId,
-    doi: String,
-    source: String,
-    publication_date: bson::datetime::DateTime,
-    title: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ArticleShortOutgoing {
-    #[serde(serialize_with = "bson::serde_helpers::serialize_object_id_as_hex_string")]
-    _id: bson::oid::ObjectId,
-    doi: String,
-    source: String,
-    publication_date: chrono::NaiveDate,
-    title: String,
-}
-
-impl From<ArticleShort> for ArticleShortOutgoing {
-    fn from(article_short: ArticleShort) -> Self {
-        let publication_date = article_short.publication_date.to_chrono();
-        let publication_date = chrono::NaiveDate::from_ymd_opt(
-            publication_date.year(),
-            publication_date.month(),
-            publication_date.day(),
-        )
-        .unwrap();
-        Self {
-            _id: article_short._id.clone(),
-            doi: article_short.doi.clone(),
-            source: article_short.source.clone(),
-            publication_date,
-            title: article_short.title.clone(),
-        }
-    }
-}
-
 #[derive(Debug)]
 pub struct ParseError;
 
