@@ -4,6 +4,7 @@ pub mod models;
 pub mod springer_data;
 
 use axum::{
+    http::StatusCode,
     extract::{Query, State},
     response::{self, IntoResponse},
     routing, Router,
@@ -90,16 +91,16 @@ pub async fn get_articles(
                         articles.push(models::ArticleOutgoing::from(article_short));
                     }
                     Err(_) => {
-                        return axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response();
+                        return StatusCode::INTERNAL_SERVER_ERROR.into_response();
                     }
                 }
             }
             if articles.len() == 0 {
-                return axum::http::StatusCode::NOT_FOUND.into_response();
+                return StatusCode::NOT_FOUND.into_response();
             }
             return response::Json::from(articles).into_response();
         }
-        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
 
@@ -120,19 +121,19 @@ pub async fn get_random_article(
                                 return response::Json::from(article).into_response();
                             }
                             Err(_) => {
-                                return axum::http::StatusCode::INTERNAL_SERVER_ERROR
+                                return StatusCode::INTERNAL_SERVER_ERROR
                                     .into_response();
                             }
                         }
                     }
                     Err(_) => {
-                        return axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response();
+                        return StatusCode::INTERNAL_SERVER_ERROR.into_response();
                     }
                 }
             }
-            return axum::http::StatusCode::NOT_FOUND.into_response();
+            return StatusCode::NOT_FOUND.into_response();
         }
-        Err(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
 
