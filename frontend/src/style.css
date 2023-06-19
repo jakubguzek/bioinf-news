@@ -2,10 +2,6 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-}
-
 footer {
   text-align: center;
   padding: 5px;
@@ -16,6 +12,11 @@ footer {
 }
 
 .container {
+  text-align: center;
+}
+
+.article-entry {
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -50,6 +51,22 @@ footer {
   white-space: nowrap;
 }
 
+.article-details {
+  margin: auto;
+  padding: 1%;
+  text-align: left;
+  width: 80%;
+}
+
+.full-title {
+  text-align: left;
+  margin: 0px;
+}
+
+.doi {
+  text-align: left
+}
+
 .title-tooltip {
   background-color: #0f0f0f;
   text-align: left;
@@ -57,10 +74,6 @@ footer {
   color: white;
   padding: 4px;
   border-radius: 8px;
-}
-
-.article-entry {
-  margin: 1%;
 }
 
 .authors {
