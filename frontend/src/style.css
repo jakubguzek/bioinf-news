@@ -96,6 +96,10 @@ footer {
   content: "; ";
 }
 
+.keywords {
+  text-align: center;
+}
+
 .keyword-list {
   padding: 1%;
   display: inline;
