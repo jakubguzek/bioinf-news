@@ -22,6 +22,7 @@ export default function ArticleHeading(props) {
   const delay = {open: 1000, close: 200};
 
   const { refs, floatingStyles, context } = useFloating({
+    placement: "bottom",
     open: isShown,
     onOpenChange: setIsShown,
     middleware: [offset(10), flip(), shift()],
