@@ -73,7 +73,7 @@ footer {
   max-width: 80%;
   color: white;
   padding: 4px;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 
 .authors {
@@ -94,6 +94,10 @@ footer {
 .authors-list > li:after {
   padding-right: 1%;
   content: "; ";
+}
+
+.keywords {
+  text-align: center;
 }
 
 .keyword-list {

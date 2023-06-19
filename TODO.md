@@ -9,13 +9,14 @@ The number located second to the ckeckbox is the priority of the task:
  - 4 - optional
 
 ## Frontend
-- [ ] 1 Make `ArticleList.js` component look pretty [Jakub]
-- [ ] 0 Add `ArticleList.js` links to article in detailed article view [Jakub]
+- [x] 1 Make `ArticleList.js` component look pretty [Jakub]
+- [x] 0 Add `ArticleList.js` links to article in detailed article view [Jakub]
 - [x] 4 Possibly refactor the part that displays the article entries in `ArticleList.js` to separate component `Article.js` [Jakub]
 - [ ] 0 Implement pagination either in a single-site manner or as an href
 - [X] 1 Implement simple searching and filtering [Mateusz]
 - [ ] 2 Make a nice header for the main site
-- [ ] 3 Clean-up and comment the code
+- [x] 3 Clean-up code 
+- [ ] 3 Comment the code
 
 ## Backend
 - [X] 2 Create a `random_article` endpoint [Mateusz]

@@ -3,23 +3,15 @@ import React from "react"
 import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  useFloating,
-  useHover,
-  useInteractions,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useFocus,
-  useDismiss,
-  useRole
+  useFloating, useHover, useInteractions, autoUpdate, offset, flip,
+  shift, useFocus, useDismiss, useRole
 } from "@floating-ui/react";
 
 export default function ArticleHeading(props) {
   const { item, isVisible } = props;
   const [isShown, setIsShown] = React.useState(false);
 
-  const delay = {open: 1000, close: 200};
+  const delay = { open: 1000, close: 200 };
 
   const { refs, floatingStyles, context } = useFloating({
     placement: "bottom",
