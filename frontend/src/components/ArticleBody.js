@@ -10,7 +10,8 @@ export default function ArticleBody({ article }) {
     <div className="article-details">
       <h3 className="full-title">{article.title}</h3>
       <p className="doi"><b>DOI: </b>
-        <a href={`https://${article.doi}`.replace("doi:", "doi.org//")} target="_blank" title="open in new tab" rel="noreferrer">
+        <a href={`https://${article.doi}`.replace("doi:", "doi.org//")} 
+          target="_blank" title="open in new tab" rel="noreferrer">
           {article.doi}
         </a>
         <sup><FontAwesomeIcon icon={faArrowUpRightFromSquare} size="2xs" /></sup>
