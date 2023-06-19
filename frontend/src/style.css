@@ -50,8 +50,10 @@ footer {
   white-space: nowrap;
 }
 
-.title-tooltip {
+.tooltip {
   background-color: #0f0f0f;
+  text-align: left;
+  max-width: 80%;
   color: white;
   padding: 4px;
   border-radius: 8px;
