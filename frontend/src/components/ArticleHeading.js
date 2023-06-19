@@ -48,7 +48,7 @@ export default function ArticleHeading(props) {
       <span className="title" ref={refs.setReference} {...getReferenceProps()}>
         {item.title}
       </span>
-      {isShown && (<div className="tooltip" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} >
+      {isShown && (<div className="title-tooltip" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} >
         {item.title}
       </div>)}
       <span className="pub-date">{item.publication_date}</span>
