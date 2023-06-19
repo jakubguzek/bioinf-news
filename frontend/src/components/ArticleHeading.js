@@ -27,23 +27,24 @@ export default function ArticleHeading(props) {
   const role = useRole(context, { role: "tooltip" });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
-    hover,
-    focus,
-    dismiss,
-    role,
+    hover, focus, dismiss, role,
   ]);
 
   return (
     <div className="article-collapsed-entry" key={item.doi}>
       <span className="caret">
-        {isVisible ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretRight} />}
+        {isVisible ?
+          <FontAwesomeIcon icon={faCaretDown} /> :
+          <FontAwesomeIcon icon={faCaretRight} />}
       </span>
       <span className="title" ref={refs.setReference} {...getReferenceProps()}>
         {item.title}
       </span>
-      {isShown && (<div className="title-tooltip" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} >
-        {item.title}
-      </div>)}
+      {isShown &&
+        <div className="title-tooltip" ref={refs.setFloating}
+          style={floatingStyles} {...getFloatingProps()}>
+          {item.title}
+        </div>}
       <span className="pub-date">{item.publication_date}</span>
       <span className="source">{item.source}</span>
     </div>
