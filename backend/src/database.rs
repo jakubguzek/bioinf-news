@@ -39,6 +39,7 @@ pub async fn create_indexes(client: &mongodb::Client) {
         .create_index(doi_index, None)
         .await
         .expect("error creating index!");
+
     let options = mongodb::options::IndexOptions::builder().build();
     let publication_date_index = mongodb::IndexModel::builder()
         .keys(doc!("publication_date": -1i32))
@@ -48,6 +49,26 @@ pub async fn create_indexes(client: &mongodb::Client) {
         .database("bioinf-news")
         .collection::<Article>("articles")
         .create_index(publication_date_index, None)
+        .await
+        .expect("error creating index!");
+
+    let source_index = mongodb::IndexModel::builder()
+        .keys(doc!("source": -1i32))
+        .build();
+    client
+        .database("bioinf-news")
+        .collection::<Article>("articles")
+        .create_index(source_index, None)
+        .await
+        .expect("error creating index!");
+
+    let title_index = mongodb::IndexModel::builder()
+        .keys(doc!("title": "text"))
+        .build();
+    client
+        .database("bioinf-news")
+        .collection::<Article>("articles")
+        .create_index(title_index, None)
         .await
         .expect("error creating index!");
 }
