@@ -19,22 +19,11 @@ footer {
   text-align: center;
 }
 
-.article {
-  margin: 0px;
-  justify-content: center;
-  align-items: center;
-}
-
 .article-collapsed-button {
   width: 80%;
   margin-top: 5px;
   background-color: white;
   border: none;
-  border-bottom: 1px solid;
-}
-
-.article-entry {
-  width: 80%;
 }
 
 .article-collapsed-entry {
@@ -42,28 +31,82 @@ footer {
 }
 
 .article-collapsed-entry > span {
-  padding: 5px 20px;
+  padding: 2px 20px;
   width: 15%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.article-collapsed-entry > span.caret {
+  width: 2%;
+}
+
 .article-collapsed-entry> span.title {
   padding-left: 0px;
   text-align: left;
-  width: 70%;
+  width: 80%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.title-tooltip {
+  background-color: #0f0f0f;
+  color: white;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.article-entry {
+  margin: 1%;
+}
+
 .authors {
-  text-align: left
+  width: 80%;
+  text-align: left;
+}
+
+.authors-list {
+  padding: 1%;
+  display: inline;
+  list-style: none;
+}
+
+.authors-list > li {
+  display: inline;
+}
+
+.authors-list > li:after {
+  padding-right: 1%;
+  content: "; ";
+}
+
+.keyword-list {
+  padding: 1%;
+  display: inline;
+  list-style: none;
+}
+
+.keyword-list > li {
+  display: inline;
+}
+
+.keyword-list > li:after {
+  padding-right: 1%;
+  content: "; ";
+}
+
+.authors-list > li:last-child:after {
+  content: "";
 }
 
 .abstract {
   text-align: left;
   text-justify: auto;
+}
+
+.collapse-caret {
+  padding-left: 0px;
 }
 
 .App-logo {
