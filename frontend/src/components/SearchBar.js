@@ -16,13 +16,14 @@ export default function SearchBar() {
     <div className="search-bar-box">
       <Select
         options = {availibleKeywords}
+        closeMenuOnSelect={false}
         isMulti
         onChange={opt => setChosenKeywords(opt)}
         placeholder="Keyword"
         styles={{
             placeholder: (baseStyles, state) => ({
               ...baseStyles,
-            display: 'flex',
+              display: 'flex',
             }),
           }}
       />
