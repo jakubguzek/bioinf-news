@@ -2,6 +2,7 @@ import React from "react";
 import './style.css';
 import ArticleList from "./components/ArticleList";
 import Footer from "./components/Footer"
+import Header from "./components/Header";
 
 class App extends React.Component {
 
@@ -35,8 +36,9 @@ class App extends React.Component {
 
     return (
       <div className="container">
+        <Header />
         <ArticleList items={items} />
-        <Footer /> 
+        <Footer />
       </div>
     );
   }
