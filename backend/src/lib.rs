@@ -192,8 +192,6 @@ pub async fn find_many_articles(
 ) -> mongodb::error::Result<mongodb::Cursor<models::Article>> {
     let collection = db.collection::<models::Article>("articles");
 
-    dbg!(&arguments);
-
     // SORT ORDER
     let mut sort_order = 1;
     if arguments.descending {
@@ -227,8 +225,8 @@ pub async fn find_many_articles(
     let n_per_page = arguments.n_per_page;
     if let Some(id) = &arguments._id {
         if let Some(publication_date) = &arguments.publication_date {
-            filter.insert("publication_date", doc!{"$lte": publication_date});
-            filter.insert("_id", doc!{"$lt": id});
+            filter.insert("publication_date", doc! {"$lte": publication_date});
+            filter.insert("_id", doc! {"$lt": id});
         }
     }
     let options = FindOptions::builder()
@@ -236,7 +234,7 @@ pub async fn find_many_articles(
         .limit(n_per_page)
         .build();
 
-    collection.find(dbg!(filter), options).await
+    collection.find(filter, options).await
 }
 
 pub async fn find_one_random_article(
