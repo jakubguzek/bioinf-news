@@ -17,10 +17,11 @@ use mongodb::{
     options::{FindOptions, InsertManyOptions},
 };
 use serde::Deserialize;
-use tower_http::cors::CorsLayer;
+use tower_http::{cors::CorsLayer, services::ServeDir};
 
 pub fn app(client: mongodb::Client) -> Router {
     Router::new()
+        .nest_service("/", ServeDir::new("frontend/build"))
         .route("/articles", routing::get(get_articles))
         .route("/random-article", routing::get(get_random_article))
         .layer(CorsLayer::permissive())
