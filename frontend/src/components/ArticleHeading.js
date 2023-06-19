@@ -1,32 +1,56 @@
 import React from "react"
-import Tooltip from "./Tooltip";
 
 import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { autoUpdate, useFloating } from "@floating-ui/react-dom";
-import { FloatingDelayGroup } from "@floating-ui/react";
+import {
+  useFloating,
+  useHover,
+  useInteractions,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  useFocus,
+  useDismiss,
+  useRole
+} from "@floating-ui/react";
 
 export default function ArticleHeading(props) {
   const { item, isVisible } = props;
-  const [isOpen, setIsOpen] = React.useState(false)
-  const { refs, floatingStyles } = useFloating({
+  const [isShown, setIsShown] = React.useState(false);
+
+  const delay = {open: 1000, close: 200};
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isShown,
+    onOpenChange: setIsShown,
+    middleware: [offset(10), flip(), shift()],
     whileElementsMounted: autoUpdate,
-    open: isOpen,
-    onOpenChange: setIsOpen
   });
 
-  function toggleTooltip() {
-    setIsOpen(prevIsOpen => !prevIsOpen)
-  }
+  const hover = useHover(context, { move: false, delay });
+  const focus = useFocus(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context, { role: "tooltip" });
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    hover,
+    focus,
+    dismiss,
+    role,
+  ]);
 
   return (
     <div className="article-collapsed-entry" key={item.doi}>
       <span className="caret">
         {isVisible ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretRight} />}
       </span>
-      <span className="title" ref={refs.setReference} onMouseEnter={toggleTooltip} onMouseLeave={toggleTooltip}>
+      <span className="title" ref={refs.setReference} {...getReferenceProps()}>
         {item.title}
       </span>
+      {isShown && (<div className="tooltip" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} >
+        {item.title}
+      </div>)}
       <span className="pub-date">{item.publication_date}</span>
       <span className="source">{item.source}</span>
     </div>
