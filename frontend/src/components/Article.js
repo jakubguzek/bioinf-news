@@ -1,7 +1,6 @@
 import React from "react"
 import ArticleHeading from "./ArticleHeading";
-import AuthorList from "./AuthorList";
-import KeywordList from "./KeywordList";
+import ArticleBody from "./ArticleBody";
 
 export default function Article(props) {
   const { item } = props;
@@ -12,16 +11,12 @@ export default function Article(props) {
   }
 
   return (
-    <div>
+    <div className="article-entry">
       <button className="article-collapsed-button" onClick={changeVisibility}>
         <ArticleHeading item={item} isVisible={isVisible} />
-          <hr />
-        {isVisible && <div className="article-entry">
-          <p className="authors"><b>Authors: </b><AuthorList authors={item.authors} /></p>
-          <p className="abstract"> <b>Abstract:</b> {item.article_abstract}</p>
-          <p className="keywords"><b>Keywords::</b> <KeywordList keywords={item.key_words} /></p>
-        </div>}
+        <hr />
       </button>
+      {isVisible && <ArticleBody key={item.doi} article={item} />}
     </div>
   )
 }
