@@ -9,10 +9,9 @@ export default function KeywordSelect(props) {
       .then(data => data.map(k => ({ value: k, label: k })));
   }
 
-  function debugSelect(opt) {
+  function keywordSelect(opt) {
     const keywords = opt.map(o => o.value)
     props.setKeywords(keywords)
-    console.log(keywords)
   }
 
   return (
@@ -21,7 +20,7 @@ export default function KeywordSelect(props) {
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
         isMulti
-        onChange={opt => debugSelect(opt)}
+        onChange={opt => keywordSelect(opt)}
         placeholder="Keyword"
         styles={{
           placeholder: (baseStyles, state) => ({

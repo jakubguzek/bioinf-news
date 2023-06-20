@@ -14,8 +14,6 @@ const DropdownIndicator = props => {
 };
 
 export default function SearchBar(props) {
-  const [query, setQuery] = React.useState();
-
   async function loadOptions(value) {
     const url = (value === null) ?
       "http://127.0.0.1:8080/articles" :
@@ -31,7 +29,7 @@ export default function SearchBar(props) {
       .then(data => data.map(k => ({ value: k.title, label: k.title })));
   }
 
-  function debugSelect(opt) {
+  function titleSelect(opt) {
     let title;
     if (!!opt) {
       title = opt.value;
@@ -39,7 +37,6 @@ export default function SearchBar(props) {
       title = null;
     }
     props.setTitle(title);
-    console.log(title);
   }
 
   return (
@@ -54,7 +51,7 @@ export default function SearchBar(props) {
         createOptionPosition="first"
         defaultOptions
         formatCreateLabel={inputValue => inputValue}
-        onChange={opt => debugSelect(opt)}
+        onChange={opt => titleSelect(opt)}
         placeholder="Title..."
         styles={{
           placeholder: (baseStyles, state) => ({

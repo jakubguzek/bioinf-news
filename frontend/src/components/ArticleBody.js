@@ -16,9 +16,9 @@ export default function ArticleBody({ article }) {
         </a>
         <sup><FontAwesomeIcon icon={faArrowUpRightFromSquare} size="2xs" /></sup>
       </p>
-      {article.authors && <p className="authors"><b>Authors: </b><AuthorList authors={article.authors} /></p>}
+      {article.authors.length > 0 && <p className="authors"><b>Authors: </b><AuthorList authors={article.authors} /></p>}
       {article.article_abstract && <p className="abstract"> <b>Abstract:</b> {article.article_abstract}</p>}
-      <p className="keywords"><b>Keywords::</b> <KeywordList keywords={article.key_words} /></p>
+      <p className="keywords"><b>Keywords:</b> <KeywordList keywords={article.key_words} /></p>
     </div >
   )
 }

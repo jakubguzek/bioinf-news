@@ -1,5 +1,5 @@
 import React from "react"
-import ArticleBody from "./ArticleBody"
+import ArticleBody from "../components/ArticleBody"
 
 import SquareLoader from "react-spinners/SquareLoader"
 
