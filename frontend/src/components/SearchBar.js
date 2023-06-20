@@ -24,6 +24,7 @@ export default function SearchBar() {
       <AsyncSelect
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
+        isClearable
         onChange={opt => debugSelect(opt)}
         placeholder="Title..."
         styles={{
