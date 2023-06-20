@@ -17,7 +17,7 @@ export default function KeywordSelect() {
   }
 
   return (
-    <div className="search-bar-box">
+    <div className="select-box">
       <AsyncSelect
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
