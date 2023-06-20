@@ -1,8 +1,19 @@
 import React from "react";
 
-import AsyncSelect from "react-select/async";
+import AsyncCreatableSelect from "react-select/async-creatable";
+import { components } from "react-select";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function SearchBar() {
+const DropdownIndicator = props => {
+ return (
+    <components.DropdownIndicator {...props}>
+      <FontAwesomeIcon icon={faMagnifyingGlass} /> 
+    </components.DropdownIndicator>
+  );
+};
+
+export default function SearchBar(props) {
   const [query, setQuery] = React.useState();
 
   async function loadOptions(value) {
@@ -10,20 +21,39 @@ export default function SearchBar() {
       "http://127.0.0.1:8080/articles" :
       `http://127.0.0.1:8080/articles?query=${value}`
     return fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          return "{}".toJSON();
+        }
+      })
       .then(data => data.map(k => ({ value: k.title, label: k.title })));
   }
 
   function debugSelect(opt) {
-    setQuery(opt)
-    console.log(setQuery)
+    let title;
+    if (!!opt) {
+      title = opt.value;
+    } else {
+      title = null;
+    }
+    props.setTitle(title);
+    console.log(title);
   }
 
   return (
     <div className="select-box">
-      <AsyncSelect
+      <AsyncCreatableSelect
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
+        isClearable
+        cacheOptions
+        components={{DropdownIndicator}}
+        allowCreateWhileLoading
+        createOptionPosition="first"
+        defaultOptions
+        formatCreateLabel={inputValue => inputValue}
         onChange={opt => debugSelect(opt)}
         placeholder="Title..."
         styles={{
