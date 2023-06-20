@@ -174,7 +174,7 @@ pub async fn find_many_articles(
         filter.insert("key_words", doc! {"$all": key_words});
     }
 
-    collection.find(dbg!(filter), options).await
+    collection.find(filter, options).await
 }
 
 pub async fn find_many_key_words(
