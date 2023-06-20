@@ -4,6 +4,8 @@ import ArticleList from "./components/ArticleList";
 import Footer from "./components/Footer"
 import Header from "./components/Header";
 
+import SquareLoader from "react-spinners/SquareLoader"
+
 class App extends React.Component {
 
   // Constructor 
@@ -31,8 +33,9 @@ class App extends React.Component {
   }
   render() {
     const { DataisLoaded, items } = this.state;
-    if (!DataisLoaded) return <div>
-      <h1> Please wait some time.... </h1> </div>;
+    if (!DataisLoaded) return <div className="loader-container"> 
+      <SquareLoader color={"DarkSalmon"} /> 
+    </div>;
 
     return (
       <div className="container">
