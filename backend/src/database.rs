@@ -71,4 +71,14 @@ pub async fn create_indexes(client: &mongodb::Client) {
         .create_index(title_index, None)
         .await
         .expect("error creating index!");
+
+    let key_words_index = mongodb::IndexModel::builder()
+        .keys(doc!("key_words": -1i32))
+        .build();
+    client
+        .database("bioinf-news")
+        .collection::<Article>("articles")
+        .create_index(key_words_index, None)
+        .await
+        .expect("error creating index!");
 }
