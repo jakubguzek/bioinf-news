@@ -1,8 +1,8 @@
 import React from "react";
 
-import AsyncSelect from "react-select/async";
+import AsyncCreatableSelect from "react-select/async-creatable";
 
-export default function SearchBar() {
+export default function SearchBar(props) {
   const [query, setQuery] = React.useState();
 
   async function loadOptions(value) {
@@ -15,16 +15,27 @@ export default function SearchBar() {
   }
 
   function debugSelect(opt) {
-    setQuery(opt)
-    console.log(setQuery)
+    let title;
+    if (!!opt) {
+      title = opt.value;
+    } else {
+      title = null;
+    }
+    props.setTitle(title);
+    console.log(title);
   }
 
   return (
     <div className="select-box">
-      <AsyncSelect
+      <AsyncCreatableSelect
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
         isClearable
+        cacheOptions
+        allowCreateWhileLoading
+        createOptionPosition="first"
+        defaultOptions
+        formatCreateLabel={inputValue => inputValue}
         onChange={opt => debugSelect(opt)}
         placeholder="Title..."
         styles={{

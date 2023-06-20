@@ -14,14 +14,19 @@ export default function ArticleList(props) {
     if (keywords.length > 0) {
       newUrl += `&key_words=${keywords.join()}`;
     }
-    return newUrl.replace(" ", "%20")
+    return newUrl.replaceAll(" ", "%20")
   }
-  
+
   async function updateArticles(keywords, title) {
     const url = "http://127.0.0.1:8080/articles"
     const newUrl = createUrl(url, keywords, title)
     console.log(newUrl)
-    const data = await fetch(newUrl).then(response => response.json())
+    const data = await fetch(newUrl)
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        }
+      })
     props.updateItems(data)
     console.log(data)
   }
@@ -32,10 +37,12 @@ export default function ArticleList(props) {
 
   return (
     <div>
-    <FilterBar setKeywords={setKeywords} setTitle={setTitle}/>
-    <div className="article-list">
-      {props.items.map((item) => (<Article key={item.doi} item={item} />))}
-    </div>
+      <FilterBar setKeywords={setKeywords} setTitle={setTitle} />
+      <div className="article-list">
+        {props.items ?
+          props.items.map((item) => (<Article key={item.doi} item={item} />)) :
+          <h5>No results were found</h5>}
+      </div>
     </div>
   );
 }
