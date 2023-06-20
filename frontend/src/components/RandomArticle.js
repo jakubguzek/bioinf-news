@@ -9,7 +9,7 @@ export default function RandomArticle() {
 
   async function fetchArticle() {
     const data = await fetch("http://127.0.0.1:8080/random-article")
-      .then(response => response.json())
+      .then(response => response.json());
     setArticle(data);
     setLoading(false);
   }

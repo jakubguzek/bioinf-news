@@ -6,45 +6,34 @@ import Header from "./components/Header";
 
 import SquareLoader from "react-spinners/SquareLoader"
 
-class App extends React.Component {
+export default function App() {
+  const [items, setItems] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
-  // Constructor 
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      items: [],
-      DataisLoaded: false
-    };
+  async function fetchArticles() {
+    const data = await fetch("http://127.0.0.1:8080/articles")
+      .then((res) => res.json());
+    setItems(data);
+    setLoading(false);
   }
 
-  // ComponentDidMount is used to
-  // execute the code 
-  componentDidMount() {
-    fetch(
-      "http://127.0.0.1:8080/articles")
-      .then((res) => res.json())
-      .then((json) => {
-        this.setState({
-          items: json,
-          DataisLoaded: true
-        });
-      })
-  }
-  render() {
-    const { DataisLoaded, items } = this.state;
-    if (!DataisLoaded) return <div className="loader-container"> 
-      <SquareLoader color={"DarkSalmon"} /> 
-    </div>;
+  React.useEffect(() => {
+    fetchArticles()
+  }, [])
 
-    return (
-      <div className="container">
-        <Header />
-        <ArticleList items={items} />
-        <Footer />
-      </div>
-    );
-  }
+  return (
+    <div className="container">
+      {loading ?
+        <div className="loader-container">
+          <SquareLoader color={"DarkSalmon"} />
+        </div> :
+        <div>
+          <Header />
+          <ArticleList items={items} />
+          <Footer />
+        </div>}
+    </div>
+  );
 }
 
-export default App;
