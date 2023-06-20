@@ -1,26 +1,27 @@
-import {React, useEffect, useState} from "react"
- 
-export default function RandomArticle() {
-    const [article, setArticle] = useState([])
+import React from "react"
+import ArticleBody from "./ArticleBody"
 
-    const fetchArticle = () => {
-      fetch("http://127.0.0.1:8080/random-article")
-        .then(response => {
-          return response.json()
-        })
-        .then(data => {
-          setArticle(data)
-        })
-    }
-  
-    useEffect(() => {
-      fetchArticle()
-    }, [])
-  
-    return (
-        <div>
-          <h3>{article.title}</h3>
-          <p><b>Authors: </b>{article.authors}</p>
-        </div >
-      );
+export default function RandomArticle() {
+  const [loading, setLoading] = React.useState(true);
+  const [article, setArticle] = React.useState(null);
+
+  function fetchArticle() {
+    fetch("http://127.0.0.1:8080/random-article")
+      .then(response => response.json())
+      .then(data => {
+        setArticle(data)
+        setLoading(false)
+        console.log(data)
+      })
+  }
+
+  React.useEffect(() => {
+    fetchArticle()
+  }, [])
+
+  return (
+    <div>
+      {loading ? <p>Loading the data...</p> : <ArticleBody article={article} />}
+    </div >
+  );
 }
