@@ -1,43 +1,19 @@
 import React from "react";
 import './style.css';
-import ArticleList from "./components/ArticleList";
-import Footer from "./components/Footer"
-import Header from "./components/Header";
-
-import SquareLoader from "react-spinners/SquareLoader"
+import ArticlesPage from "./pages/ArticlesPage";
+import AppLayout from "./components/AppLayout";
+import {Routes, Route} from "react-router-dom"
+import RandomArticle from "./pages/RandomArticle";
 
 export default function App() {
-  const [items, setItems] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-
-
-  async function fetchArticles() {
-    const data = await fetch("http://127.0.0.1:8080/articles")
-      .then((res) => res.json());
-    setItems(data);
-    setLoading(false);
-  }
-
-  React.useEffect(() => {
-    fetchArticles()
-  }, [])
-
-  function updateItems(newItems) {
-      setItems(newItems)
-  }
-
   return (
-    <div className="container">
-      {loading ?
-        <div className="loader-container">
-          <SquareLoader color={"DarkSalmon"} />
-        </div> :
-        <div>
-          <Header />
-          <ArticleList items={items} updateItems={updateItems} loading={loading}/>
-          <Footer />
-        </div>}
-    </div>
+    <Routes>
+      <Route element={<AppLayout/>}>
+      <Route path="/random" element={<RandomArticle />} />
+      <Route path="/" element={<ArticlesPage />} />
+      </Route>
+    </Routes>
   );
 }
+
 

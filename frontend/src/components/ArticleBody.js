@@ -18,7 +18,7 @@ export default function ArticleBody({ article }) {
       </p>
       {article.authors && <p className="authors"><b>Authors: </b><AuthorList authors={article.authors} /></p>}
       {article.article_abstract && <p className="abstract"> <b>Abstract:</b> {article.article_abstract}</p>}
-      <p className="keywords"><b>Keywords::</b> <KeywordList keywords={article.key_words} /></p>
+      <p className="keywords"><b>Keywords:</b> <KeywordList keywords={article.key_words} /></p>
     </div >
   )
 }
