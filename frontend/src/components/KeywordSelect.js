@@ -2,9 +2,7 @@ import React from "react";
 
 import AsyncSelect from "react-select/async";
 
-export default function KeywordSelect() {
-  const [chosenKeyowrds, setChosenKeywords] = React.useState([]);
-
+export default function KeywordSelect(props) {
   async function loadOptions() {
     return fetch("http://127.0.0.1:8080/keywords")
       .then(response => response.json())
@@ -12,8 +10,9 @@ export default function KeywordSelect() {
   }
 
   function debugSelect(opt) {
-    setChosenKeywords(opt)
-    console.log(chosenKeyowrds)
+    const keywords = opt.map(o => o.value)
+    props.setKeywords(keywords)
+    console.log(keywords)
   }
 
   return (

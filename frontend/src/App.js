@@ -22,6 +22,10 @@ export default function App() {
     fetchArticles()
   }, [])
 
+  function updateItems(newItems) {
+      setItems(newItems)
+  }
+
   return (
     <div className="container">
       {loading ?
@@ -30,7 +34,7 @@ export default function App() {
         </div> :
         <div>
           <Header />
-          <ArticleList items={items} />
+          <ArticleList items={items} updateItems={updateItems} loading={loading}/>
           <Footer />
         </div>}
     </div>
