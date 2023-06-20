@@ -36,7 +36,7 @@ export default function ArticleList(props) {
   }, [keywords, title])
 
   return (
-    <div>
+    <div className="article-list-container">
       <FilterBar setKeywords={setKeywords} setTitle={setTitle} />
       <div className="article-list">
         {props.items ?

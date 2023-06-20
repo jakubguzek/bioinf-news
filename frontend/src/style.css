@@ -15,7 +15,6 @@ footer {
   text-align: center;
   width: 100%;
   padding: 5px;
-  margin-top: 5px;
   background-color: DarkSalmon;
   color: white;
   float: bottom;
@@ -35,6 +34,10 @@ footer {
 	align-items: center;
 	position: fixed;
 	z-index: 1;
+}
+
+.article-list-container {
+  padding-bottom: 100px;
 }
 
 .header {
