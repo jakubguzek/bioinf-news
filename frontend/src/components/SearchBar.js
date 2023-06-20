@@ -10,7 +10,13 @@ export default function SearchBar(props) {
       "http://127.0.0.1:8080/articles" :
       `http://127.0.0.1:8080/articles?query=${value}`
     return fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          return "{}".toJSON();
+        }
+      })
       .then(data => data.map(k => ({ value: k.title, label: k.title })));
   }
 
