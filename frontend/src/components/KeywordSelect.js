@@ -2,7 +2,7 @@ import React from "react";
 
 import Select from "react-select";
 
-export default function SearchBar() {
+export default function KeywordSelect() {
   const availibleKeywords = [
     { label: "Bioinformatics", value: "Bioinformatics" },
     { label: "Biotechnology", value: "Biotechnology" },
@@ -16,13 +16,14 @@ export default function SearchBar() {
     <div className="search-bar-box">
       <Select
         options = {availibleKeywords}
+        closeMenuOnSelect={false}
         isMulti
         onChange={opt => setChosenKeywords(opt)}
         placeholder="Keyword"
         styles={{
             placeholder: (baseStyles, state) => ({
               ...baseStyles,
-            display: 'flex',
+              display: 'flex',
             }),
           }}
       />

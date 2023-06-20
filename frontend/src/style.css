@@ -18,6 +18,8 @@ footer {
 .header {
   margin: 0 auto;
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   width: 80%;
   justify-content: space-between;
   align-items: center;
@@ -138,6 +140,7 @@ footer {
 }
 
 .search-bar-box {
+  text-align: left;
   width: 40%;
 }
 
