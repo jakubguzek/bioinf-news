@@ -1,6 +1,17 @@
 import React from "react";
 
 import AsyncCreatableSelect from "react-select/async-creatable";
+import { components } from "react-select";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const DropdownIndicator = props => {
+ return (
+    <components.DropdownIndicator {...props}>
+      <FontAwesomeIcon icon={faMagnifyingGlass} /> 
+    </components.DropdownIndicator>
+  );
+};
 
 export default function SearchBar(props) {
   const [query, setQuery] = React.useState();
@@ -38,6 +49,7 @@ export default function SearchBar(props) {
         closeMenuOnSelect={false}
         isClearable
         cacheOptions
+        components={{DropdownIndicator}}
         allowCreateWhileLoading
         createOptionPosition="first"
         defaultOptions
