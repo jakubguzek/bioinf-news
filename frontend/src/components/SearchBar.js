@@ -2,18 +2,21 @@ import React from "react";
 
 import AsyncSelect from "react-select/async";
 
-export default function KeywordSelect() {
-  const [chosenKeyowrds, setChosenKeywords] = React.useState([]);
+export default function SearchBar() {
+  const [query, setQuery] = React.useState();
 
-  async function loadOptions() {
-    return fetch("http://127.0.0.1:8080/keywords")
+  async function loadOptions(value) {
+    const url = (value === null) ?
+      "http://127.0.0.1:8080/articles" :
+      `http://127.0.0.1:8080/articles?query=${value}`
+    return fetch(url)
       .then(response => response.json())
-      .then(data => data.map(k => ({ value: k, label: k })));
+      .then(data => data.map(k => ({ value: k.title, label: k.title })));
   }
 
   function debugSelect(opt) {
-    setChosenKeywords(opt)
-    console.log(chosenKeyowrds)
+    setQuery(opt)
+    console.log(setQuery)
   }
 
   return (
@@ -21,9 +24,8 @@ export default function KeywordSelect() {
       <AsyncSelect
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
-        isMulti
         onChange={opt => debugSelect(opt)}
-        placeholder="Keyword"
+        placeholder="Title..."
         styles={{
           placeholder: (baseStyles, state) => ({
             ...baseStyles,
