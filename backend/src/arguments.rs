@@ -17,8 +17,8 @@ fn naive_to_bson(date: NaiveDate) -> Result<bson::datetime::DateTime, models::Pa
 pub struct UrlPagination {
     pub _id: Option<bson::oid::ObjectId>,
     pub publication_date: Option<NaiveDate>,
-    pub n_per_page: i64,
-    pub descending: bool,
+    pub n_per_page: Option<i64>,
+    pub descending: Option<bool>,
 }
 
 impl Default for UrlPagination {
@@ -26,8 +26,8 @@ impl Default for UrlPagination {
         Self {
             _id: None,
             publication_date: None,
-            n_per_page: 30,
-            descending: true,
+            n_per_page: Some(30),
+            descending: Some(true),
         }
     }
 }
@@ -51,16 +51,24 @@ impl TryFrom<UrlPagination> for Pagination {
             publication_date = Some(date_bson);
         }
 
-        let n_per_page = pagination.n_per_page;
-        if n_per_page < 0 {
-            return Err(models::ParseError);
+        let mut n_per_page = 30;
+        if let Some(n) = pagination.n_per_page {
+            if n < 0 {
+                return Err(models::ParseError);
+            }
+            n_per_page = n;
+        }
+
+        let mut descending = true;
+        if let Some(order) = pagination.descending {
+            descending = order;
         }
 
         return Ok(Self {
             _id: pagination._id,
             publication_date,
             n_per_page,
-            descending: pagination.descending,
+            descending,
         });
     }
 }
