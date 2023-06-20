@@ -2,13 +2,25 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  position: relative;
+}
+
 footer {
   text-align: center;
+  width: 100%;
   padding: 5px;
   margin-top: 5px;
   background-color: DarkSalmon;
   color: white;
   float: bottom;
+  position: absolute;
+  bottom: 0;
 }
 
 .container {
