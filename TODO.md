@@ -10,6 +10,7 @@ The number located second to the ckeckbox is the priority of the task:
 
 ## Genreal
 - [ ] 1 Try to host everything on student server or find some other free hosting
+- [ ] 1 Write a nicer README
 
 ## Frontend
 - [x] 1 Make `ArticleList.js` component look pretty [Jakub]
