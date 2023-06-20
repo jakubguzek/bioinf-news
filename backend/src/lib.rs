@@ -171,10 +171,10 @@ pub async fn find_many_articles(
 
     // KEYWORDS
     if let Some(key_words) = &arguments.key_words {
-        filter.insert("key_words", doc! {"$in": key_words});
+        filter.insert("key_words", doc! {"$all": key_words});
     }
 
-    collection.find(filter, options).await
+    collection.find(dbg!(filter), options).await
 }
 
 pub async fn find_many_key_words(

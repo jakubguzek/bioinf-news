@@ -1,7 +1,7 @@
+use super::models;
 use chrono::{Datelike, NaiveDate};
 use mongodb::bson::{self, doc};
 use serde::Deserialize;
-use super::models;
 
 fn naive_to_bson(date: NaiveDate) -> Result<bson::datetime::DateTime, models::ParseError> {
     bson::DateTime::builder()
@@ -69,7 +69,7 @@ impl TryFrom<UrlPagination> for Pagination {
 pub struct UrlArguments {
     pub query: Option<String>,
     pub source: Option<String>,
-    pub key_words: Option<Vec<String>>,
+    pub key_words: Option<String>,
     pub start_date: Option<NaiveDate>,
     pub end_date: Option<NaiveDate>,
 }
@@ -99,10 +99,21 @@ impl TryFrom<UrlArguments> for FindArguments {
             }
         }
 
+        let mut key_words: Option<Vec<String>> = None;
+        if let Some(key_words_string) = arguments.key_words {
+            key_words = Some(
+                key_words_string
+                    .as_str()
+                    .split(',')
+                    .map(|x| x.to_string())
+                    .collect::<Vec<String>>(),
+            );
+        }
+
         return Ok(Self {
             query: arguments.query,
             source: arguments.source,
-            key_words: arguments.key_words,
+            key_words,
             start_date,
             end_date,
         });
@@ -120,4 +131,3 @@ impl Default for UrlArguments {
         }
     }
 }
-
