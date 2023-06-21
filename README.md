@@ -6,6 +6,8 @@ Design principles behind it are: simplicity, conciseness and readability.
 
 For now only articles from one publisher: Springer, are collected in the database but the backend service used by the application is written in an extensible manner, to facilitate adding new information sources in the future.
 
+![](features.gif)
+
 ### Technologies used in the project
 
 Rust programming language was used for the backend API to, because of its focus on code correctness, performance and its use of high-level, zero-cost abstractions (those built into the language as well as those provided by third party libraries.) 
