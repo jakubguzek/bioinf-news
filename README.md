@@ -1,14 +1,24 @@
-## Recent Articles in Bioinformatics
+# Recent Articles in Bioinformatics
 
 This is a code repository for a web application, that allows users to view newest research papers, corrections and news-pieces published in the field of bioinformatics. Provided web application is focued on responsiveness and usability as well as accessibility. 
 
 Design principles behind it are: simplicity, conciseness and readability. 
 
+## Features
+
+### Quickly look through paper summaries
+
+![](articles.gif)
+
+### Search and filter
+
+![](filtering.gif)
+
+## Future directions
+
 For now only articles from one publisher: Springer, are collected in the database but the backend service used by the application is written in an extensible manner, to facilitate adding new information sources in the future.
 
-![](features.gif)
-
-### Technologies used in the project
+## Technologies used in the project
 
 Rust programming language was used for the backend API to, because of its focus on code correctness, performance and its use of high-level, zero-cost abstractions (those built into the language as well as those provided by third party libraries.) 
 
