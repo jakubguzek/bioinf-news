@@ -3,6 +3,15 @@ import React from "react";
 import AsyncSelect from "react-select/async";
 
 export default function KeywordSelect(props) {
+  const [ariaFocusMessage, setAriaFocusMessage] = React.useState("");
+
+  function onFocus({ focused, isDisabled }) {
+      const msg = `${isDisabled ? 'This option is diabled: ' : ''}
+                    You are currently focused on option ${focused.label}`;
+      setAriaFocusMessage(msg);
+      return msg;
+    };
+
   async function loadOptions() {
     return fetch("http://127.0.0.1:8080/keywords")
       .then(response => response.json())
@@ -17,11 +26,13 @@ export default function KeywordSelect(props) {
   return (
     <div className="select-box">
       <AsyncSelect
+        aria-label="Select keywords"
+        ariaLiveMessages={{onFocus}}
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
         isMulti
         onChange={opt => keywordSelect(opt)}
-        placeholder="Keyword"
+        placeholder="Select a Keyword"
         styles={{
           placeholder: (baseStyles, state) => ({
             ...baseStyles,

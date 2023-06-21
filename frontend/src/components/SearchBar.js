@@ -6,14 +6,24 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const DropdownIndicator = props => {
- return (
+  return (
     <components.DropdownIndicator {...props}>
-      <FontAwesomeIcon icon={faMagnifyingGlass} /> 
+      <FontAwesomeIcon icon={faMagnifyingGlass} />
     </components.DropdownIndicator>
   );
 };
 
+
 export default function SearchBar(props) {
+  const [ariaFocusMessage, setAriaFocusMessage] = React.useState("");
+
+  function onFocus({ focused, isDisabled }) {
+      const msg = `${isDisabled ? 'This option is diabled: ' : ''}
+                    You are currently focused on option ${focused.label}`;
+      setAriaFocusMessage(msg);
+      return msg;
+    };
+
   async function loadOptions(value) {
     const url = (value === null) ?
       "http://127.0.0.1:8080/articles" :
@@ -42,17 +52,21 @@ export default function SearchBar(props) {
   return (
     <div className="select-box">
       <AsyncCreatableSelect
+        aria-label="Search for titles"
+        ariaLiveMessages={{onFocus}}
         loadOptions={loadOptions}
         closeMenuOnSelect={false}
+        inputId="search-title"
+        name="Title Search Bar"
         isClearable
         cacheOptions
-        components={{DropdownIndicator}}
+        components={{ DropdownIndicator }}
         allowCreateWhileLoading
         createOptionPosition="first"
         defaultOptions
         formatCreateLabel={inputValue => inputValue}
         onChange={opt => titleSelect(opt)}
-        placeholder="Title..."
+        placeholder="Search for Title"
         styles={{
           placeholder: (baseStyles, state) => ({
             ...baseStyles,
