@@ -20,7 +20,7 @@ For now only articles from one publisher: Springer, are collected in the databas
 
 ## Technologies used in the project
 
-Rust programming language was used for the backend API to, because of its focus on code correctness, performance and its use of high-level, zero-cost abstractions (those built into the language as well as those provided by third party libraries.) 
+Rust programming language was used for the backend API, because of its focus on code correctness, performance and its use of high-level, zero-cost abstractions (those built into the language as well as those provided by third party libraries.) 
 
 Backend API makes use of asynchronous runtime provided by Tokio to further enhance performance.
 
